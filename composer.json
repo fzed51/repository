@@ -1,6 +1,6 @@
 {
   "name": "fzed51/repository",
-  "description": "Syst\u00e8me de base pour concevoir des repository faisant appel \u00e0 PDO",
+  "description": "Système de base pour concevoir des repository faisant appel à PDO",
   "type": "library,",
   "license": "MIT",
   "authors": [
@@ -10,7 +10,10 @@
     }
   ],
   "minimum-stability": "stable",
-  "require": {},
+  "require": {
+    "php": "^7.1",
+    "ext-pdo": "*"
+  },
   "autoload": {
     "psr-4": {
       "Repository\\": "./src"
