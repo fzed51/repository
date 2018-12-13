@@ -1,0 +1,12 @@
+# OS
+
+# IDE
+
+.vscode/
+.idea/
+
+# PROJET
+
+vendor/
+logs/
+! logs/empty
