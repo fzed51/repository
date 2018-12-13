@@ -1,7 +1,7 @@
 {
   "name": "fzed51/repository",
   "description": "Système de base pour concevoir des repository faisant appel à PDO",
-  "type": "library,",
+  "type": "library",
   "license": "MIT",
   "authors": [
     {
