@@ -1,0 +1,55 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "b11fcafdb0acd27b86fdc59804c933a6",
+    "packages": [],
+    "packages-dev": [
+        {
+            "name": "fzed51/run-test",
+            "version": "v0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzed51/run-test.git",
+                "reference": "ae0b39a41b9220ccc4a95f373824d674e49d0447"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzed51/run-test/zipball/ae0b39a41b9220ccc4a95f373824d674e49d0447",
+                "reference": "ae0b39a41b9220ccc4a95f373824d674e49d0447",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "bin": [
+                "bin/run-test"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Sanchez",
+                    "email": "fzed51@users.noreply.github.com"
+                }
+            ],
+            "description": "Outil de test unitaire",
+            "time": "2018-12-14T09:00:35+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.1",
+        "ext-pdo": "*"
+    },
+    "platform-dev": []
+}

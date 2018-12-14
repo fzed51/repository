@@ -9,14 +9,20 @@
       "email": "fzed51@users.noreply.github.com"
     }
   ],
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "require": {
     "php": "^7.1",
     "ext-pdo": "*"
+  },
+  "require-dev": {
+    "fzed51/run-test": "^0.2"
   },
   "autoload": {
     "psr-4": {
       "Repository\\": "./src"
     }
+  },
+  "scripts": {
+      "test": "run-test"
   }
 }
