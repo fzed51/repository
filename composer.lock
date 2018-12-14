@@ -4,12 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b11fcafdb0acd27b86fdc59804c933a6",
-    "packages": [],
-    "packages-dev": [
+    "content-hash": "18d71d0907614c1a5571f3db05815aa5",
+    "packages": [
         {
             "name": "fzed51/run-test",
-            "version": "v0.2",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzed51/run-test.git",
@@ -42,8 +41,9 @@
             "time": "2018-12-14T09:00:35+00:00"
         }
     ],
+    "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
