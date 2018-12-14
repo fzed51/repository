@@ -4,27 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18d71d0907614c1a5571f3db05815aa5",
-    "packages": [
+    "content-hash": "e8cb18080950bf9b00607d9d9af2d02b",
+    "packages": [],
+    "packages-dev": [
         {
             "name": "fzed51/run-test",
-            "version": "v1.0.0",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzed51/run-test.git",
-                "reference": "ae0b39a41b9220ccc4a95f373824d674e49d0447"
+                "reference": "ae34f81d35cf808d7afb6fd211f88f675bff923d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzed51/run-test/zipball/ae0b39a41b9220ccc4a95f373824d674e49d0447",
-                "reference": "ae0b39a41b9220ccc4a95f373824d674e49d0447",
+                "url": "https://api.github.com/repos/fzed51/run-test/zipball/ae34f81d35cf808d7afb6fd211f88f675bff923d",
+                "reference": "ae34f81d35cf808d7afb6fd211f88f675bff923d",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1"
             },
             "bin": [
-                "bin/run-test"
+                "./bin/run-test"
             ],
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -38,10 +39,9 @@
                 }
             ],
             "description": "Outil de test unitaire",
-            "time": "2018-12-14T09:00:35+00:00"
+            "time": "2018-12-14T14:14:57+00:00"
         }
     ],
-    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
