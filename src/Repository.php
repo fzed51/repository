@@ -150,9 +150,9 @@ abstract class Repository
     public function getLastId()
     {
         $pk = Field::getPk($this->structure);
-        $this->setReqSql("select max($pk) as id from {$this->table}");
-        $data = $this->fetchOne();
-        return $data['id'];
+        $this->setReqSql("select max($pk) as idmax from {$this->table}");
+        $data = array_change_key_case($this->fetchOne(), CASE_LOWER);
+        return $data['idmax'];
     }
 
 }
