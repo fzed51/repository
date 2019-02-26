@@ -2,9 +2,6 @@
 
 namespace Repository;
 
-use App\Exception\InternalError;
-use App\Exception\PdoExceptionByPass;
-
 /**
  * Fonctioin utilisant la propriété PDO
  */
@@ -25,7 +22,7 @@ trait HasPdo
      * Requete SQL à executer
      * @var string
      */
-    protected $reSql;
+    protected $reqSql;
     /**
      * Cache de requête SQL
      * @var \PDOStatement[];
@@ -37,7 +34,7 @@ trait HasPdo
      * @param string $reqSql
      * @return void
      */
-    protected function setReqSql(string $reqSql)
+    protected function setReqSql(string $reqSql): void
     {
         $this->reqSql = $reqSql;
     }
@@ -49,28 +46,22 @@ trait HasPdo
      */
     protected function execute(array $params) : \PDOStatement
     {
-        try {
-            /**
-             * @var \PDOStatement $stm
-             */
-            $stm = $this->prepare();
-            $ok = true;
-            if (empty($params)) {
-                $ok = $stm->execute();
-            } else {
-                $params = $this->controlInputEncoding($params);
-                $ok = $stm->execute($params);
-            }
-            if (!$ok) {
-                throw new InternalError(
-                    "Impossible d'executer la requete : '" . $this->reSql
-                        . "' dans " . static::class
-                        . " avec " . var_export($params, true)
-                );
-            }
-            return $stm;
-        } catch (\PDOException $ex) {
-            throw new PdoExceptionByPass($ex);
+        /**
+         * @var \PDOStatement $stm
+         */
+        $stm = $this->prepare();
+        if (empty($params)) {
+            $ok = $stm->execute();
+        } else {
+            $params = $this->controlInputEncoding($params);
+            $ok = $stm->execute($params);
+        }
+        if (!$ok) {
+            throw new \LogicException(
+                'Impossible d\'executer la requete : \'' . $this->reqSql
+                . '\' dans ' . static::class
+                . ' avec ' . var_export($params, true)
+            );
         }
         return $stm;
     }
@@ -82,13 +73,13 @@ trait HasPdo
     protected function prepare() : \PDOStatement
     {
         if (empty($this->reqSql)) {
-            throw new InternalError("Il n'y a pas de requêtes initialisée dans " . static::class);
+            throw new \LogicException("Il n'y a pas de requêtes initialisée dans " . static::class);
         }
         $hashReq = md5($this->reqSql);
         if (!isset($this->cachePdoStatement[$hashReq])) {
             $stm = $this->pdo->prepare($this->reqSql);
             if ($stm === false) {
-                throw new InternalError("Impossible de préparer la requete : " . $this->reqSql . " dans " . static::class);
+                throw new \RuntimeException('Impossible de préparer la requete : ' . $this->reqSql . ' dans ' . static::class);
             }
             $this->cachePdoStatement[$hashReq] = $stm;
         }
@@ -99,8 +90,6 @@ trait HasPdo
      * Retourne un enregistrement
      * @param array $param
      * @return array|null
-     * @throws InternalError
-     * @throws PdoExceptionByPass
      */
     protected function fetchOne(array $param = []) : ? array
     {
@@ -113,8 +102,6 @@ trait HasPdo
      * Retourne tous les enregistrements
      * @param array $param
      * @return array
-     * @throws InternalError
-     * @throws PdoExceptionByPass
      */
     protected function fetchAll(array $param = []) : array
     {
@@ -131,7 +118,7 @@ trait HasPdo
     {
         $out = [];
         foreach ($elements as $key => $value) {
-            if (is_string($value) && !is_null($value)) {
+            if (is_string($value) && $value !== null) {
                 $out[$key] = $this->changeEncoding($value, $this->encoded);
             } else {
                 $out[$key] = $value;
@@ -175,7 +162,7 @@ trait HasPdo
         $supportedCharset[] = 'ISO-8859-1';
         $supportedCharset[] = 'ASCII';
         $charset = mb_detect_encoding ($value, $supportedCharset, true);
-        if($newCharset != $charset){
+        if ($newCharset !== $charset) {
             return mb_convert_encoding($value, $newCharset, $charset);
         }
         return $value;

@@ -26,6 +26,11 @@ abstract class Repository
 
     use HasPdo;
 
+    /**
+     * Repository constructor.
+     * @param \Pdo $pdo
+     * @param \Repository\ValidatorInterface $validator
+     */
     public function __construct(\Pdo $pdo, ValidatorInterface $validator)
     {
         $this->pdo = $pdo;
@@ -41,12 +46,17 @@ abstract class Repository
     {
         ($this->validator)($entity);
         $pk = Field::getPk($this->structure);
-        if (is_null($pk) || empty($entity[$pk] ?? 0)) {
+        if ($pk === null || empty($entity[$pk] ?? 0)) {
             return $this->insert($entity);
         }
         return $this->update($entity);
     }
 
+    /**
+     * modifie un enregistrement
+     * @param array $entity
+     * @return array|null
+     */
     protected function update(array $entity): ?array
     {
         $pk = Field::getPk($this->structure);
@@ -54,17 +64,15 @@ abstract class Repository
         $fields = [];
         $values = [];
         foreach ($this->structure as $field) {
-            if ($field->isWritable()) {
-                if ($field->isNotNull()
-                    && (!isset($entity[$field->getNom()])
-                        || is_null($entity[$field->getNom()])
-                        || $entity[$field->getNom()] == "")) {
-                    throw new BadRequest("Le champ {$field->getNom()} est requis pour {$this->table}. ");
-                }
+            if ($field->isWritable() && $field->isNotNull()
+                && (!isset($entity[$field->getNom()])
+                    || $entity[$field->getNom()] === null
+                    || $entity[$field->getNom()] === '')) {
+                throw new \LogicException("Le champ {$field->getNom()} est requis pour {$this->table}. ");
             }
             if (isset($entity[$field->getNom()])) {
-                $fields[] = $field->getNom() . " = ?";
-                if (is_null($entity[$field->getNom()])) {
+                $fields[] = $field->getNom() . ' = ?';
+                if ($entity[$field->getNom()] === null) {
                     $values[] = null;
                 } else {
                     $values[] = $field->get($entity);
@@ -79,6 +87,11 @@ abstract class Repository
         return $this->getById([$id]);
     }
 
+    /**
+     * crée un enregistrement
+     * @param array $entity
+     * @return array|null
+     */
     protected function insert(array $entity): ?array
     {
         $patterns = [];
@@ -88,14 +101,14 @@ abstract class Repository
             if ($field->isWritable()) {
                 if ($field->isNotNull()
                     && (!isset($entity[$field->getNom()])
-                        || is_null($entity[$field->getNom()])
-                        || $entity[$field->getNom()] == "")) {
-                    throw new BadRequest("Le champ {$field->getNom()} est requis pour {$this->table}. ");
+                        || $entity[$field->getNom()] === null
+                        || $entity[$field->getNom()] === '')) {
+                    throw new \LogicException("Le champ {$field->getNom()} est requis pour {$this->table}. ");
                 }
                 if (isset($entity[$field->getNom()])) {
                     $patterns[] = '?';
                     $fields[] = $field->getNom();
-                    if (is_null($entity[$field->getNom()])) {
+                    if ($entity[$field->getNom()] === null) {
                         $values[] = null;
                     } else {
                         $values[] = $field->get($entity);
@@ -110,12 +123,21 @@ abstract class Repository
         return $this->getLastRow();
     }
 
+    /**
+     * liste l'ensemblre des enregistrements d'une table
+     * @return array
+     */
     public function getAll(): array
     {
         $this->setReqSql("SELECT * FROM {$this->table}");
         return $this->fetchAll();
     }
 
+    /**
+     * retourne un enregistrement spécifique
+     * @param $id
+     * @return array|null
+     */
     public function getById($id): ?array
     {
         $pk = Field::getPk($this->structure);
@@ -123,10 +145,13 @@ abstract class Repository
         return $this->fetchOne($id);
     }
 
+    /**
+     * @return array
+     */
     protected function getLastRow(): array
     {
         $pk = Field::getPk($this->structure);
-        if (!is_null($pk)) {
+        if ($pk !== null) {
             $id = $this->getLastId();
             $this->setReqSql("SELECT * FROM {$this->table} WHERE $pk = ?");
             return $this->fetchOne([$id]);
@@ -147,6 +172,10 @@ abstract class Repository
 
     }
 
+    /**
+     * retourne la dernière clé primaire utilisée
+     * @return int|string
+     */
     public function getLastId()
     {
         $pk = Field::getPk($this->structure);

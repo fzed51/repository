@@ -12,10 +12,11 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^7.1",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-mbstring": "*"
   },
   "require-dev": {
-    "fzed51/run-test": "^1.0"
+    "fzed51/run-test": "^1"
   },
   "autoload": {
     "psr-4": {
