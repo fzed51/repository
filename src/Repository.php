@@ -41,6 +41,7 @@ abstract class Repository
      * sauvegarde d'une transaction
      * @param array $entity
      * @return array
+     * @throws \Exception
      */
     public function save(array $entity): ?array
     {
@@ -84,7 +85,7 @@ abstract class Repository
         $req = "update {$this->table} set $fields where $pk = ?";
         $this->setReqSql($req);
         $this->execute($values);
-        return $this->getById([$id]);
+        return $this->getById($id);
     }
 
     /**
@@ -142,7 +143,7 @@ abstract class Repository
     {
         $pk = Field::getPk($this->structure);
         $this->setReqSql("SELECT * FROM {$this->table} WHERE $pk = ?");
-        return $this->fetchOne($id);
+        return $this->fetchOne([$id]);
     }
 
     /**
