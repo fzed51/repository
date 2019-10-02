@@ -9,4 +9,5 @@
 
 vendor/
 logs/
-! logs/empty
+!logs/empty
+*.cache

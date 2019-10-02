@@ -16,14 +16,19 @@
     "ext-mbstring": "*"
   },
   "require-dev": {
-    "fzed51/run-test": "^1"
+    "phpunit/phpunit": "^8.3"
   },
   "autoload": {
     "psr-4": {
       "Repository\\": "./src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\Stub\\": "./test/Stub"
+    }
+  },
   "scripts": {
-    "test": "run-test"
+    "test": "phpunit"
   }
 }
