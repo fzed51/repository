@@ -90,22 +90,23 @@ class Field
 
     /**
      * @param array $data
-     * @return string
+     * @return int|float|string|null
      */
-    public function get(array $data): string
+    public function get(array $data)
     {
         return $this->cast($data[$this->nom]);
     }
 
     /**
      * @param $value
-     * @return string|null
+     * @return int|float|string|null
      */
-    protected function cast($value): ?string
+    protected function cast($value)
     {
         $type = $this->type & ~self::T_NN;
         $type &= ~self::T_PK;
         switch ($type) {
+            case self::T_TIME:
             case self::T_INT:
                 return (int)$value;
             case self::T_FLOAT:
@@ -114,8 +115,6 @@ class Field
                 return (bool)$value;
             case self::T_STR:
                 return (string)$value;
-            case self::T_TIME:
-                return (int)$value;
             case self::T_DATE:
                 try {
                     return $this->castDate($value);
@@ -166,12 +165,18 @@ class Field
      */
     public static function getPk(array $fields): ?string
     {
+        $fieldPk = self::getPkField($fields);
+        return $fieldPk !== null ? $fieldPk->nom : null;
+    }
+
+    public static function getPkField(array $fields): ?Field
+    {
         /**
          * @var self $field
          */
         $fieldPk = array_filter($fields, function (Field $field) {
             return $field->isPk();
         });
-        return isset($fieldPk[0]) ? $fieldPk[0]->nom : null;
+        return $fieldPk[0] ?? null;
     }
 }

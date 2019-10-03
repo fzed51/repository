@@ -29,7 +29,7 @@ class RepositoryTest extends TestCase
         $this->assertIsArray($stored);
         $this->assertArrayHasKey('id', $stored);
         $this->assertArrayHasKey('valeur', $stored);
-        $this->assertSame($entity['id'], (int)$stored['id']);
+        $this->assertSame($entity['id'], $stored['id']);
         $this->assertSame($entity['valeur'], $stored['valeur']);
     }
 
@@ -65,8 +65,8 @@ class RepositoryTest extends TestCase
     {
         $repo = new Stub2Repository($this->pdo, new StubValidator());
         $stored = $repo->save(['valeur' => 'lorem']);
-        $lastId = (int)$repo->getLastId();
-        $this->assertSame((int)$stored['id'], $lastId);
+        $lastId = $repo->getLastId();
+        $this->assertSame($stored['id'], $lastId);
     }
 
     public function testGetById()
@@ -76,6 +76,15 @@ class RepositoryTest extends TestCase
         $stored = $repo->save(['valeur' => $valeur]);
         $return = $repo->getById((int)$stored['id']);
         $this->assertSame($valeur, $return['valeur']);
+    }
+
+    public function test_castOutput()
+    {
+        $repo = new Stub2Repository($this->pdo, new StubValidator());
+        $valeur = "1";
+        $stored = $repo->save(['valeur' => $valeur]);
+        $this->assertIsInt($stored['id']);
+        $this->assertIsString($stored['valeur']);
     }
 
     public function testGetAll()

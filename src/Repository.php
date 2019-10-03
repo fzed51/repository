@@ -131,7 +131,7 @@ abstract class Repository
     public function getAll(): array
     {
         $this->setReqSql("SELECT * FROM {$this->table}");
-        return $this->fetchAll();
+        return $this->outCast($this->fetchAll());
     }
 
     /**
@@ -143,7 +143,8 @@ abstract class Repository
     {
         $pk = Field::getPk($this->structure);
         $this->setReqSql("SELECT * FROM {$this->table} WHERE $pk = ?");
-        return $this->fetchOne([$id]);
+        $result = $this->fetchOne([$id]);
+        return $this->outCastOne($result);
     }
 
     /**
@@ -155,18 +156,18 @@ abstract class Repository
         if ($pk !== null) {
             $id = $this->getLastId();
             $this->setReqSql("SELECT * FROM {$this->table} WHERE $pk = ?");
-            return $this->fetchOne([$id]);
+            return $this->outCastOne($this->fetchOne([$id]));
         }
         switch ($this->getDbDriver()) {
             case 'sqlite':
                 $this->setReqSql("SELECT * FROM {$this->table} WHERE ROWID = (select last_insert_rowid() from {$this->table})");
-                return $this->fetchOne();
+                return $this->outCastOne($this->fetchOne());
             case 'postgresql':
                 $this->setReqSql("SELECT *, ROW_NUMBER() OVER () FROM {$this->table} ORDER by ROW_NUMBER DESC LIMIT 1");
-                return $this->fetchOne();
+                return $this->outCastOne($this->fetchOne());
             case 'oci':
                 $this->setReqSql("SELECT *, ROWID FROM {$this->table} WHERE ROWID = (select max(ROWID) from {$this->table})");
-                return $this->fetchOne();
+                return $this->outCastOne($this->fetchOne());
             default:
                 throw new \LogicException("Il est impossible de récupéré le dernier enregistrement de {$this->table}.");
         }
@@ -179,10 +180,40 @@ abstract class Repository
      */
     public function getLastId()
     {
-        $pk = Field::getPk($this->structure);
-        $this->setReqSql("select max($pk) as idmax from {$this->table}");
-        $data = array_change_key_case($this->fetchOne(), CASE_LOWER);
-        return $data['idmax'];
+        $pk = Field::getPkField($this->structure);
+        $this->setReqSql("select max({$pk->getNom()}) as {$pk->getNom()} from {$this->table}");
+        //$data = array_change_key_case($this->fetchOne(), CASE_LOWER);
+        $data = $this->fetchOne();
+        return $pk->get($data);
+    }
+
+    /**
+     * formate la sortie pour lecture d'un tableau d'enregistrement
+     * @param array $arryFetch
+     * @return array
+     */
+    protected function outCast(array $arryFetch): array
+    {
+        return array_map(
+            function ($fetch) {
+                return $this->outCastOne($fetch);
+            },
+            $arryFetch
+        );
+    }
+
+    protected function outCastOne(?array $fetch): ?array
+    {
+        if ($fetch === null) {
+            return null;
+        }
+        $out = [];
+        foreach ($this->structure as $field) {
+            if (isset($fetch[$field->getNom()])) {
+                $out[$field->getNom()] = $field->get($fetch);
+            }
+        }
+        return $out;
     }
 
 }
